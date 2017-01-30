@@ -29,8 +29,31 @@ bool inverted = false;
 void setup() {
   Serial.begin(9600);
   Serial.print("Hello Arduino Due");
+  
+  pinMode(p2,OUTPUT);
+  digitalWrite(p2,HIGH);
+  
+  pinMode(p16,OUTPUT);
+  digitalWrite(p16,LOW);
 }
 void loop() {
-
+  for(byte i=0; i<width;++i){
+    for(byte j=0; j<width;++j){
+        pinMode(high[i],OUTPUT);
+        digitalWrite(high[i],HIGH);
+    
+        pinMode(low[j],OUTPUT);
+        digitalWrite(low[j],LOW);
+        delay(200);
+        clear();
+      }
+  }
+  
 }
+void clear(){
+    for(byte i=0; i<width;++i){
+      digitalWrite(high[i],LOW);
+      pinMode(low[i],INPUT);
+    }
+  }
 
