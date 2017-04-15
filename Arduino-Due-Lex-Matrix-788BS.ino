@@ -20,40 +20,39 @@ byte high[8] = {p5,p2,p7,p1,p12,p8,p14,p9};
 byte low[8] = {p16,p15,p11,p6,p10,p4,p3,p13};
 
 //led matrix dot cords
-int x=0,
-    y=0;
+int x=5,
+    y=7;
    
 byte width=8;
-bool inverted = false;
+bool inverted = true;
 
 void setup() {
   Serial.begin(9600);
-  Serial.print("Hello Arduino Due");
-  
-  pinMode(p2,OUTPUT);
-  digitalWrite(p2,HIGH);
-  
-  pinMode(p16,OUTPUT);
-  digitalWrite(p16,LOW);
+  Serial.println("Hello Arduino Due"); 
+    for(byte i=0; i<width;++i){
+     pinMode(high[i],OUTPUT);
+    }
 }
 void loop() {
   for(byte i=0; i<width;++i){
-    for(byte j=0; j<width;++j){
-        pinMode(high[i],OUTPUT);
-        digitalWrite(high[i],HIGH);
-    
-        pinMode(low[j],OUTPUT);
-        digitalWrite(low[j],LOW);
-        delay(200);
-        clear();
-      }
+     digitalWrite(high[i],HIGH);
+     for(byte j=0; j<width;++j){
+        if(lightUp(i,j)){
+          pinMode(low[j],OUTPUT);
+          digitalWrite(low[j],LOW);
+        }
+     }
+     //turning on
+     delay(2);
+     //turning off
+     digitalWrite(high[i],LOW);
+     for(byte j=0; j<width;++j){
+        pinMode(low[j],INPUT);
+     }
   }
-  
+  Serial.println("Looped");
 }
-void clear(){
-    for(byte i=0; i<width;++i){
-      digitalWrite(high[i],LOW);
-      pinMode(low[i],INPUT);
-    }
-  }
-
+bool lightUp(byte i, byte j){
+  bool equal = i==x && j==y;
+  return inverted ? !equal : equal;
+}
