@@ -20,20 +20,37 @@ byte high[8] = {p5,p2,p7,p1,p12,p8,p14,p9};
 byte low[8] = {p16,p15,p11,p6,p10,p4,p3,p13};
 
 //led matrix dot cords
-int x=5,
-    y=7;
-   
+int x=0,
+    y=0;
+
+int controlX = A9;
+int controlY = A8;
+int controlSw= 50;
+
 byte width=8;
-bool inverted = true;
+bool inverted = false;
+bool sw_buttonDown = false;
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("Hello Arduino Due"); 
-    for(byte i=0; i<width;++i){
+  pinMode(controlSw,INPUT);
+  digitalWrite(controlSw, HIGH);
+  
+  for(byte i=0; i<width;++i){
+    //led matrix
      pinMode(high[i],OUTPUT);
-    }
+  }
 }
 void loop() {
+  if(!digitalRead(controlSw)){
+     if(!sw_buttonDown){
+      sw_buttonDown = true;
+      inverted = !inverted;
+      }
+  }else{
+      sw_buttonDown = false;
+  }
+  
   for(byte i=0; i<width;++i){
      digitalWrite(high[i],HIGH);
      for(byte j=0; j<width;++j){
@@ -50,7 +67,6 @@ void loop() {
         pinMode(low[j],INPUT);
      }
   }
-  Serial.println("Looped");
 }
 bool lightUp(byte i, byte j){
   bool equal = i==x && j==y;
