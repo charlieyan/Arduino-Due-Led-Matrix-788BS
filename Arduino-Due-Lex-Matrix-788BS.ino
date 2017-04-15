@@ -42,6 +42,8 @@ void setup() {
   }
 }
 void loop() {
+  //reading controls
+  //switch
   if(!digitalRead(controlSw)){
      if(!sw_buttonDown){
       sw_buttonDown = true;
@@ -50,6 +52,14 @@ void loop() {
   }else{
       sw_buttonDown = false;
   }
+  //x and y
+  short xVal = analogRead(controlX);
+  short yVal = analogRead(controlY);
+  if(xVal < 500 && x>0) --x;
+  else if(xVal > 1000 && x<width-1) ++x;
+  if(yVal > 1000 && y>0) --y;
+  else if(yVal < 500 && y<width-1) ++y;
+
   
   for(byte i=0; i<width;++i){
      digitalWrite(high[i],HIGH);
