@@ -31,6 +31,8 @@ byte width=8;
 bool inverted = false;
 bool sw_buttonDown = false;
 
+byte loopCount=0;
+
 void setup() {
   Serial.begin(9600);
   pinMode(controlSw,INPUT);
@@ -43,23 +45,23 @@ void setup() {
 }
 void loop() {
   //reading controls
-  //switch
-  if(!digitalRead(controlSw)){
-     if(!sw_buttonDown){
-      sw_buttonDown = true;
-      inverted = !inverted;
-      }
-  }else{
-      sw_buttonDown = false;
+  if(++loopCount%7==1){//only read inputs after 7 cycles, otherwise the speed is incontrolabble
+    if(!digitalRead(controlSw)){
+       if(!sw_buttonDown){
+        sw_buttonDown = true;
+        inverted = !inverted;
+        }
+    }else{
+        sw_buttonDown = false;
+    }
+    //x and y
+    short xVal = analogRead(controlX);
+    short yVal = analogRead(controlY);
+    if(xVal < 500 && x>0) --x;
+    else if(xVal > 1000 && x<width-1) ++x;
+    if(yVal > 1000 && y>0) --y;
+    else if(yVal < 500 && y<width-1) ++y;
   }
-  //x and y
-  short xVal = analogRead(controlX);
-  short yVal = analogRead(controlY);
-  if(xVal < 500 && x>0) --x;
-  else if(xVal > 1000 && x<width-1) ++x;
-  if(yVal > 1000 && y>0) --y;
-  else if(yVal < 500 && y<width-1) ++y;
-
   
   for(byte i=0; i<width;++i){
      digitalWrite(high[i],HIGH);
